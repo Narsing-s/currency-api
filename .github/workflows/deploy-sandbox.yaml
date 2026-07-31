@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       deploy:
-        description: 'Set to yes to deploy to CloudHub 2.0'
+        description: 'Deploy to CloudHub 2.0?'
         required: true
         default: 'no'
         type: choice
@@ -18,9 +18,6 @@ on:
 
 jobs:
 
-  # ==========================================================
-  # BUILD
-  # ==========================================================
   build:
     name: Build Mule Application
     runs-on: ubuntu-latest
@@ -41,19 +38,16 @@ jobs:
         run: |
           mvn -B clean package \
             -DskipTests \
-            -Dapp.name=bank-account-eapi \
+            -Dapp.name=currency-api \
             -Denvironment=Sandbox
 
-      - name: Upload Mule artifact
+      - name: Upload Mule application
         uses: actions/upload-artifact@v4
         with:
-          name: mule-application
+          name: currency-api-jar
           path: target/*-mule-application.jar
 
 
-  # ==========================================================
-  # DEPLOY
-  # ==========================================================
   deploy:
     name: Deploy to CloudHub 2.0
     needs: build
@@ -76,22 +70,16 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Download Mule artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: mule-application
-          path: target
-
       - name: Deploy to CloudHub 2.0
         env:
-          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
-          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
+          CONNECTED_APP_CLIENT_ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
+          CONNECTED_APP_CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
 
         run: |
-          mvn -B deploy \
+          mvn -B clean deploy \
             -DmuleDeploy \
             -DskipTests \
-            -Dapp.name=bank-account-eapi \
+            -Dapp.name=currency-api \
             -Denvironment=Sandbox \
-            -Danypoint.username="${ANYPOINT_USERNAME}" \
-            -Danypoint.password="${ANYPOINT_PASSWORD}"
+            -DconnectedApp.clientId="${CONNECTED_APP_CLIENT_ID}" \
+            -DconnectedApp.clientSecret="${CONNECTED_APP_CLIENT_SECRET}"
