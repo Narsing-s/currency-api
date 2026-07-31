@@ -10,55 +10,60 @@
 	<name>currency-api</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<app.runtime>4.9.0</app.runtime>
-		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
-		<app.name>currency-api</app.name>
-        <environment>Sandbox</environment>
-    <target>Cloudhub-US-East-2</target>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	
+	    <app.runtime>4.9.0</app.runtime>
+	    <mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
+	
+	    <app.name>currency-api</app.name>
+	    <environment>Sandbox</environment>
 	</properties>
 
 	<build>
-		<plugins>
-			<plugin>
-			    <groupId>org.mule.tools.maven</groupId>
-			    <artifactId>mule-maven-plugin</artifactId>
-			    <version>${mule.maven.plugin.version}</version>
-			    <extensions>true</extensions>
-			
-			    <configuration>
-				    <cloudhub2Deployment>
-				
-				        <uri>https://anypoint.mulesoft.com</uri>
-				
-				        <provider>MC</provider>
-				
-				        <environment>${environment}</environment>
-				
-				        <target>Shared Space</target>
-				
-				        <applicationName>${app.name}</applicationName>
-				
-				        <muleVersion>4.12.1:4e</muleVersion>
-				
-				        <replicas>1</replicas>
-				
-				        <vCores>0.1</vCores>
-				
-				        <connectedAppClientId>${connectedApp.clientId}</connectedAppClientId>
-				
-				        <connectedAppClientSecret>${connectedApp.clientSecret}</connectedAppClientSecret>
-				
-				        <connectedAppGrantType>client_credentials</connectedAppGrantType>
-				
-				    </cloudhub2Deployment>
-				</configuration>
-			
-			</plugin>
-		</plugins>
-	</build>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.mule.tools.maven</groupId>
+	            <artifactId>mule-maven-plugin</artifactId>
+	            <version>${mule.maven.plugin.version}</version>
+	            <extensions>true</extensions>
+	
+	            <configuration>
+	                <cloudhub2Deployment>
+	
+	                    <uri>https://anypoint.mulesoft.com</uri>
+	
+	                    <provider>MC</provider>
+	
+	                    <environment>${environment}</environment>
+	
+	                    <target>Shared Space</target>
+	
+	                    <applicationName>${app.name}</applicationName>
+	
+	                    <muleVersion>4.9.0:4e</muleVersion>
+	
+	                    <replicas>1</replicas>
+	
+	                    <vCores>0.1</vCores>
+	
+	                    <connectedAppClientId>
+	                        ${connectedApp.clientId}
+	                    </connectedAppClientId>
+	
+	                    <connectedAppClientSecret>
+	                        ${connectedApp.clientSecret}
+	                    </connectedAppClientSecret>
+	
+	                    <connectedAppGrantType>
+	                        client_credentials
+	                    </connectedAppGrantType>
+	
+	                </cloudhub2Deployment>
+	            </configuration>
+	        </plugin>
+	    </plugins>
+	</build>	
 
 	<dependencies>
 		<dependency>
