@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: currency-api
+version: v1
+
+traits:
+  err: !include exchange_modules/0ff55035-173a-4380-b5b9-a8c9b9e31c77/error-status-codes/1.0.1/error-status-codes.raml
+
+/currencies/{currency}:
+  get:
+    is:
+      - err
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/file.json
+
+              
+              
