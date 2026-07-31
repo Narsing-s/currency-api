@@ -15,6 +15,9 @@
 
 		<app.runtime>4.9.0</app.runtime>
 		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
+		<app.name>currency-api</app.name>
+        <environment>Sandbox</environment>
+    <target>Cloudhub-US-East-2</target>
 	</properties>
 
 	<build>
