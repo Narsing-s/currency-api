@@ -1,0 +1,62 @@
+name: MuleSoft CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    name: Build Mule Application
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build Mule Application
+        run: |
+          mvn -B clean package \
+            -DskipTests
+
+  deploy:
+    name: Deploy to CloudHub 2.0 - MAIN
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Deploy to CloudHub 2.0
+        env:
+          CONNECTED_APP_CLIENT_ID: ${{ secrets.ANYPOINT_CLIENT_ID }}
+          CONNECTED_APP_CLIENT_SECRET: ${{ secrets.ANYPOINT_CLIENT_SECRET }}
+
+        run: |
+          mvn -B clean deploy \
+            -DmuleDeploy \
+            -DskipTests \
+            -Dapp.name=currency-api \
+            -Denvironment=Sandbox \
+            -DconnectedApp.clientId="${CONNECTED_APP_CLIENT_ID}" \
+            -DconnectedApp.clientSecret="${CONNECTED_APP_CLIENT_SECRET}"
