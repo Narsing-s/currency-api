@@ -1,25 +1,31 @@
-name: Deploy Mule API
+name: MuleSoft CI/CD Pipeline
 
 on:
   push:
     branches:
+      - stg
       - main
 
   workflow_dispatch:
     inputs:
       deploy:
-        description: 'Deploy to CloudHub 2.0?'
+        description: "Deploy to CloudHub 2.0?"
         required: true
-        default: 'no'
         type: choice
         options:
-          - 'no'
-          - 'yes'
+          - "yes"
+          - "no"
+        default: "no"
 
 jobs:
 
+  # ==========================================
+  # BUILD
+  # ==========================================
   build:
+
     name: Build Mule Application
+
     runs-on: ubuntu-latest
 
     steps:
@@ -31,32 +37,44 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
           cache: maven
 
-      - name: Build Mule application
+      - name: Build Mule Application
         run: |
           mvn -B clean package \
             -DskipTests \
             -Dapp.name=currency-api \
-            -Denvironment=Sandbox
+            -Denvironment=Sandbox \
+            -Dtarget="Shared Space"
 
-      - name: Upload Mule application
+      - name: Upload Mule Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: currency-api-jar
+          name: mule-application
           path: target/*-mule-application.jar
 
 
-  deploy:
-    name: Deploy to CloudHub 2.0
+  # ==========================================
+  # DEPLOY STG
+  # ==========================================
+  deploy-stg:
+
+    name: Deploy to STG
+
     needs: build
 
-    if: >
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.deploy == 'yes'
+    if: |
+      github.ref == 'refs/heads/stg' &&
+      (
+        github.event_name == 'push' ||
+        github.event.inputs.deploy == 'yes'
+      )
 
     runs-on: ubuntu-latest
+
+    environment:
+      name: stg
 
     steps:
 
@@ -67,13 +85,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
           cache: maven
 
-      - name: Deploy to CloudHub 2.0
+      - name: Deploy to CloudHub 2.0 - STG
         env:
-          CONNECTED_APP_CLIENT_ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
-          CONNECTED_APP_CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
+          CLIENT_ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
 
         run: |
           mvn -B clean deploy \
@@ -81,5 +99,55 @@ jobs:
             -DskipTests \
             -Dapp.name=currency-api \
             -Denvironment=Sandbox \
-            -DconnectedApp.clientId="${CONNECTED_APP_CLIENT_ID}" \
-            -DconnectedApp.clientSecret="${CONNECTED_APP_CLIENT_SECRET}"
+            -Dtarget="Shared Space" \
+            -DconnectedApp.clientId="${CLIENT_ID}" \
+            -DconnectedApp.clientSecret="${CLIENT_SECRET}"
+
+
+  # ==========================================
+  # DEPLOY MAIN / PRODUCTION
+  # ==========================================
+  deploy-main:
+
+    name: Deploy to CloudHub 2.0 - MAIN
+
+    needs: build
+
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (
+        github.event_name == 'push' ||
+        github.event.inputs.deploy == 'yes'
+      )
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Deploy to CloudHub 2.0 - MAIN
+        env:
+          CLIENT_ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
+
+        run: |
+          mvn -B clean deploy \
+            -DmuleDeploy \
+            -DskipTests \
+            -Dapp.name=currency-api \
+            -Denvironment=Sandbox \
+            -Dtarget="Shared Space" \
+            -DconnectedApp.clientId="${CLIENT_ID}" \
+            -DconnectedApp.clientSecret="${CLIENT_SECRET}"
