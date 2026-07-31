@@ -3,29 +3,24 @@ name: MuleSoft CI/CD Pipeline
 on:
   push:
     branches:
-      - stg
       - main
+      - stg
 
   workflow_dispatch:
     inputs:
       deploy:
-        description: "Deploy to CloudHub 2.0?"
+        description: "Deploy application to CloudHub 2.0?"
         required: true
         type: choice
         options:
           - "yes"
           - "no"
-        default: "no"
+        default: "yes"
 
 jobs:
 
-  # ==========================================
-  # BUILD
-  # ==========================================
   build:
-
     name: Build Mule Application
-
     runs-on: ubuntu-latest
 
     steps:
@@ -40,41 +35,28 @@ jobs:
           java-version: "17"
           cache: maven
 
-      - name: Build Mule Application
+      - name: Build Mule application
         run: |
           mvn -B clean package \
-            -DskipTests \
-            -Dapp.name=currency-api \
-            -Denvironment=Sandbox \
-            -Dtarget="Shared Space"
+            -DskipTests
 
-      - name: Upload Mule Artifact
+      - name: Upload Mule artifact
         uses: actions/upload-artifact@v4
         with:
           name: mule-application
-          path: target/*-mule-application.jar
+          path: target/*.jar
 
 
-  # ==========================================
-  # DEPLOY STG
-  # ==========================================
-  deploy-stg:
-
-    name: Deploy to STG
-
+  deploy:
+    name: Deploy to CloudHub 2.0
     needs: build
 
     if: |
-      github.ref == 'refs/heads/stg' &&
-      (
-        github.event_name == 'push' ||
-        github.event.inputs.deploy == 'yes'
-      )
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' &&
+       github.event.inputs.deploy == 'yes')
 
     runs-on: ubuntu-latest
-
-    environment:
-      name: stg
 
     steps:
 
@@ -88,66 +70,23 @@ jobs:
           java-version: "17"
           cache: maven
 
-      - name: Deploy to CloudHub 2.0 - STG
-        env:
-          CLIENT_ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
-
-        run: |
-          mvn -B clean deploy \
-            -DmuleDeploy \
-            -DskipTests \
-            -Dapp.name=currency-api \
-            -Denvironment=Sandbox \
-            -Dtarget="Shared Space" \
-            -DconnectedApp.clientId="${CLIENT_ID}" \
-            -DconnectedApp.clientSecret="${CLIENT_SECRET}"
-
-
-  # ==========================================
-  # DEPLOY MAIN / PRODUCTION
-  # ==========================================
-  deploy-main:
-
-    name: Deploy to CloudHub 2.0 - MAIN
-
-    needs: build
-
-    if: |
-      github.ref == 'refs/heads/main' &&
-      (
-        github.event_name == 'push' ||
-        github.event.inputs.deploy == 'yes'
-      )
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: production
-
-    steps:
-
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
+      - name: Download Mule artifact
+        uses: actions/download-artifact@v4
         with:
-          distribution: temurin
-          java-version: "17"
-          cache: maven
+          name: mule-application
+          path: target
 
-      - name: Deploy to CloudHub 2.0 - MAIN
+      - name: Deploy to CloudHub 2.0
         env:
-          CLIENT_ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
+          CONNECTED_APP_CLIENT_ID: ${{ vars.CONNECTED_APP_CLIENT_ID }}
+          CONNECTED_APP_CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
 
         run: |
-          mvn -B clean deploy \
+          mvn -B deploy \
             -DmuleDeploy \
             -DskipTests \
             -Dapp.name=currency-api \
             -Denvironment=Sandbox \
-            -Dtarget="Shared Space" \
-            -DconnectedApp.clientId="${CLIENT_ID}" \
-            -DconnectedApp.clientSecret="${CLIENT_SECRET}"
+            -DconnectedApp.clientId="${CONNECTED_APP_CLIENT_ID}" \
+            -DconnectedApp.clientSecret="${CONNECTED_APP_CLIENT_SECRET}" \
+            -DconnectedApp.grantType=client_credentials
