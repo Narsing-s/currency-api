@@ -1,0 +1,93 @@
+#%RAML 1.0 Trait
+
+
+  responses:
+    400:
+      body:
+        application/json:
+          example:
+            {
+              "status": 400,
+              "error": "Bad Request",
+              "message": "Invalid request parameters"
+            }
+
+    401:
+      body:
+        application/json:
+          example:
+            {
+              "status": 401,
+              "error": "Unauthorized",
+              "message": "Authentication token is missing or invalid"
+            }
+
+    403:
+      body:
+        application/json:
+          example:
+            {
+              "status": 403,
+              "error": "Forbidden",
+              "message": "You do not have permission to access this resource"
+            }
+
+    404:
+      body:
+        application/json:
+          example:
+            {
+              "status": 404,
+              "error": "Not Found",
+              "message": "Requested resource not found"
+            }
+
+    405:
+      body:
+        application/json:
+          example:
+            {
+              "status": 405,
+              "error": "Method Not Allowed",
+              "message": "HTTP method is not supported for this endpoint"
+            }
+
+    409:
+      body:
+        application/json:
+          example:
+            {
+              "status": 409,
+              "error": "Conflict",
+              "message": "Resource already exists"
+            }
+
+    422:
+      body:
+        application/json:
+          example:
+            {
+              "status": 422,
+              "error": "Unprocessable Entity",
+              "message": "Validation failed for the request data"
+            }
+
+    500:
+      body:
+        application/json:
+          example:
+            {
+              "status": 500,
+              "error": "Internal Server Error",
+              "message": "Unexpected system error occurred"
+            }
+
+    503:
+      body:
+        application/json:
+          example:
+            {
+              "status": 503,
+              "error": "Service Unavailable",
+              "message": "Service is temporarily unavailable"
+            }
