@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="Currency API Explorer and live currency converter." />
+  <title>Currency API — Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="orb orb-one"></div><div class="orb orb-two"></div>
+  <header class="nav shell">
+    <a class="brand" href="#top"><span class="brand-mark">¤</span><span>Currency API</span></a>
+    <nav><a href="#converter">Converter</a><a href="#api">API</a><a href="#about">About</a></nav>
+    <a class="github" href="https://github.com/Narsing-s/currency-api" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </header>
+
+  <main id="top" class="shell">
+    <section class="hero">
+      <div class="eyebrow"><span class="pulse"></span> Currency API Explorer</div>
+      <h1>Convert currencies.<br><span>Understand the rate.</span></h1>
+      <p class="hero-copy">A clean web interface for the MuleSoft Currency API. Enter an amount, choose currencies, and inspect the live API response.</p>
+      <div class="hero-actions"><a class="primary" href="#converter">Start converting <span>↓</span></a><a class="secondary" href="#api">View API details</a></div>
+      <div class="stats"><div><strong>REST</strong><small>API style</small></div><div><strong>JSON</strong><small>Response format</small></div><div><strong>Mule 4</strong><small>Backend</small></div></div>
+    </section>
+
+    <section id="converter" class="converter-card">
+      <div class="card-head"><div><div class="section-kicker">LIVE CONVERTER</div><h2>Currency conversion</h2></div><div id="status" class="status idle">Ready</div></div>
+      <div class="converter-grid">
+        <label class="field"><span>Amount</span><input id="amount" type="number" min="0.01" step="0.01" value="1" inputmode="decimal" /></label>
+        <label class="field"><span>From</span><select id="from"></select></label>
+        <button id="swap" class="swap" aria-label="Swap currencies">⇄</button>
+        <label class="field"><span>To</span><select id="to"></select></label>
+        <button id="convert" class="convert">Convert <span>→</span></button>
+      </div>
+      <div id="result" class="result empty"><span class="result-icon">↗</span><div><strong>Your result will appear here</strong><small>Uses the configured Currency API endpoint.</small></div></div>
+      <details class="settings"><summary>API endpoint settings</summary><div class="endpoint-row"><input id="apiUrl" type="url" placeholder="https://your-mulesoft-api.example.com" /><button id="saveApi">Save endpoint</button></div><small>For the Vercel UI, set the public base URL of your MuleSoft backend. The app calls <code>/api/currencies/{currency}</code>.</small></details>
+    </section>
+
+    <section id="api" class="api-section">
+      <div class="section-title"><div><div class="section-kicker">DEVELOPER EXPERIENCE</div><h2>Simple API, useful UI</h2></div><p>The RAML contract exposes a currency resource, while the Mule flow calls the exchange-rate provider and returns JSON.</p></div>
+      <div class="api-grid">
+        <article><span class="number">01</span><h3>Get rates</h3><p>Request the latest exchange rates for a currency code.</p><code>GET /api/currencies/USD</code></article>
+        <article><span class="number">02</span><h3>JSON response</h3><p>The upstream response is returned as application/json for easy integration.</p><code>application/json</code></article>
+        <article><span class="number">03</span><h3>Try it here</h3><p>Use the converter above to make a real browser request against your deployed API.</p><code>Fetch + CORS</code></article>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div><div class="section-kicker">ARCHITECTURE</div><h2>Built around a MuleSoft API</h2><p>The repository contains the RAML definition, APIKit-generated routing, and a Mule flow that forwards the currency request to the exchange-rate service.</p></div>
+      <div class="flow"><span>Browser UI</span><b>→</b><span>Vercel</span><b>→</b><span>Mule API</span><b>→</b><span>Exchange provider</span></div>
+    </section>
+  </main>
+  <footer class="shell footer"><span>Currency API</span><span>Open source • MuleSoft • Vercel</span></footer>
+  <script src="./app.js"></script>
+</body>
+</html>
