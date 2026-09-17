@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=20260917-2" />
 </head>
 <body>
   <div class="orb orb-one"></div><div class="orb orb-two"></div>
@@ -35,8 +35,8 @@
         <label class="field"><span>To</span><select id="to" aria-label="To currency"></select></label>
         <button id="convert" class="convert" type="button">Convert <span>→</span></button>
       </div>
-      <div id="result" class="result empty"><span class="result-icon">↗</span><div><strong>Ready to convert</strong><small>The UI is already configured to use the MuleSoft listener endpoint from the project code.</small></div></div>
-      <div class="endpoint-status"><div><span class="section-kicker">BACKEND</span><strong>MuleSoft API endpoint configured automatically</strong><small>UI target: <code>http://localhost:8081/api/currencies/{currency}</code> • Listener: <code>0.0.0.0:8081</code> • No endpoint entry is required from the user.</small></div><button id="testApi" type="button">Test connection</button></div>
+      <div id="result" class="result empty"><span class="result-icon">↗</span><div><strong>Ready to convert</strong><small>The configured MuleSoft API is used automatically. No endpoint input is required.</small></div></div>
+      <div class="endpoint-status"><div><span class="section-kicker">BACKEND</span><strong>MuleSoft API endpoint configured automatically</strong><small>UI target: <code>http://localhost:8081/api/currencies/{currency}</code> • Listener: <code>0.0.0.0:8081</code> • Users do not enter or save an endpoint.</small></div><button id="testApi" type="button">Test connection</button></div>
     </section>
     <section id="api" class="api-section">
       <div class="section-title"><div><div class="section-kicker">DEVELOPER EXPERIENCE</div><h2>Your complete currency catalogue</h2></div><p>The selector contains all currency codes present in the repository's RAML example response, rather than a small hand-picked list.</p></div>
@@ -45,6 +45,6 @@
     <section id="about" class="about"><div><div class="section-kicker">ARCHITECTURE</div><h2>Built around a MuleSoft API</h2><p>The repository contains the RAML definition, APIKit-generated routing, and a Mule flow that forwards the currency request to the exchange-rate service.</p></div><div class="flow"><span>Browser UI</span><b>→</b><span>Vercel</span><b>→</b><span>Mule API</span><b>→</b><span>Exchange provider</span></div></section>
   </main>
   <footer class="shell footer"><span>Currency API</span><span>Open source • MuleSoft • Vercel</span></footer>
-  <script src="./app.js"></script>
+  <script src="./app.js?v=20260917-2"></script>
 </body>
 </html>
