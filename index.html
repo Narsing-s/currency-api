@@ -22,7 +22,7 @@
     <section class="hero">
       <div class="eyebrow"><span class="pulse"></span> Currency API Explorer</div>
       <h1>Convert currencies.<br><span>Understand the rate.</span></h1>
-      <p class="hero-copy">Explore every currency exposed by your RAML example, convert amounts, and inspect the live MuleSoft API response.</p>
+      <p class="hero-copy">Explore every currency exposed by the RAML example, convert amounts, and inspect the live MuleSoft API response.</p>
       <div class="hero-actions"><a class="primary" href="#converter">Start converting <span>↓</span></a><a class="secondary" href="#api">View API details</a></div>
       <div class="stats"><div><strong>REST</strong><small>API style</small></div><div><strong id="currencyCount">0+</strong><small>currencies</small></div><div><strong>Mule 4</strong><small>backend</small></div></div>
     </section>
@@ -35,16 +35,12 @@
         <label class="field"><span>To</span><select id="to" aria-label="To currency"></select></label>
         <button id="convert" class="convert" type="button">Convert <span>→</span></button>
       </div>
-      <div id="result" class="result empty"><span class="result-icon">↗</span><div><strong>Your result will appear here</strong><small>Configure your MuleSoft API endpoint below to enable live conversion.</small></div></div>
-      <details class="settings" open>
-        <summary>API endpoint settings <span>Required for live conversion</span></summary>
-        <div class="endpoint-row"><input id="apiUrl" type="url" placeholder="https://your-mulesoft-api.example.com" autocomplete="url" /><button id="saveApi" type="button">Save endpoint</button><button id="testApi" type="button">Test connection</button><button id="clearApi" class="secondary-btn" type="button">Clear</button></div>
-        <small>Enter only the public MuleSoft base URL. The UI automatically calls <code>/api/currencies/{currency}</code>. Do not paste the endpoint path itself.</small>
-      </details>
+      <div id="result" class="result empty"><span class="result-icon">↗</span><div><strong>Ready to convert</strong><small>The UI is already configured to use the MuleSoft listener endpoint from the project code.</small></div></div>
+      <div class="endpoint-status"><div><span class="section-kicker">BACKEND</span><strong>MuleSoft API endpoint configured automatically</strong><small>UI target: <code>http://localhost:8081/api/currencies/{currency}</code> • Listener: <code>0.0.0.0:8081</code> • No endpoint entry is required from the user.</small></div><button id="testApi" type="button">Test connection</button></div>
     </section>
     <section id="api" class="api-section">
       <div class="section-title"><div><div class="section-kicker">DEVELOPER EXPERIENCE</div><h2>Your complete currency catalogue</h2></div><p>The selector contains all currency codes present in the repository's RAML example response, rather than a small hand-picked list.</p></div>
-      <div class="api-grid"><article><span class="number">01</span><h3>All currencies</h3><p>All codes from the API example are available in both From and To selectors.</p><code>INR • USD • EUR • ...</code></article><article><span class="number">02</span><h3>Get rates</h3><p>Requests the latest rates for the selected source currency.</p><code>GET /api/currencies/{currency}</code></article><article><span class="number">03</span><h3>Real errors</h3><p>Missing endpoint, invalid URL, HTTP errors, invalid JSON, CORS failures, and missing rates are shown clearly in the UI.</p><code>HTTP + CORS</code></article></div>
+      <div class="api-grid"><article><span class="number">01</span><h3>All currencies</h3><p>All codes from the API example are available in both From and To selectors.</p><code>INR • USD • EUR • ...</code></article><article><span class="number">02</span><h3>Get rates</h3><p>Requests the latest rates for the selected source currency through the MuleSoft API.</p><code>GET /api/currencies/{currency}</code></article><article><span class="number">03</span><h3>Clear errors</h3><p>Connection, HTTP, JSON, CORS, and missing-rate failures are shown directly in the converter.</p><code>HTTP + CORS</code></article></div>
     </section>
     <section id="about" class="about"><div><div class="section-kicker">ARCHITECTURE</div><h2>Built around a MuleSoft API</h2><p>The repository contains the RAML definition, APIKit-generated routing, and a Mule flow that forwards the currency request to the exchange-rate service.</p></div><div class="flow"><span>Browser UI</span><b>→</b><span>Vercel</span><b>→</b><span>Mule API</span><b>→</b><span>Exchange provider</span></div></section>
   </main>
